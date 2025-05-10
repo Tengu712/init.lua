@@ -1,13 +1,13 @@
 -- Bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
-      { "\nPress any key to exit..." },
+      { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
+      { out, 'WarningMsg' },
+      { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
     os.exit(1)
@@ -16,22 +16,29 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Configure leader key
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
 -- Install or load plugins
-require("lazy").setup({
+require('lazy').setup({
   {
-    "phaazon/hop.nvim",
-    branch = "v2",
+    'neovim/nvim-lspconfig',
     config = function()
-      require("hop").setup {
+      local lspconfig = require('lspconfig')
+      lspconfig.lua_ls.setup({})
+    end
+  },
+  {
+    'phaazon/hop.nvim',
+    branch = 'v2',
+    config = function()
+      require('hop').setup {
         multi_windows = true,
       }
     end,
     keys = {
-      {mode = "", "<Leader><Leader>", ":HopWord<CR>", desc = "HopWordを起動する"},
-      {mode = "", "<Leader>l", ":HopLine<CR>", desc = "HopLineを起動する"},
+      {mode = '', '<Leader><Leader>', ':HopWord<CR>', desc = 'HopWordを起動する'},
+      {mode = '', '<Leader>l', ':HopLine<CR>', desc = 'HopLineを起動する'},
     }
   },
   {
@@ -40,11 +47,11 @@ require("lazy").setup({
     dependencies = { 'nvim-lua/plenary.nvim' }
   },
   {
-    "Tengu712/marks-popup.nvim"
+    'Tengu712/marks-popup.nvim'
   }
 })
 
-require("marks-popup").setup()
+require('marks-popup').setup()
 
 -------------------------------------------------------------------------------
 
