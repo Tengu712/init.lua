@@ -24,8 +24,30 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     config = function()
+      vim.diagnostic.config({
+        update_in_insert = true,
+        virtual_text = true,
+        signs = true,
+        underline = true,
+        severity_sort = true
+      })
       local lspconfig = require('lspconfig')
       lspconfig.lua_ls.setup({})
+      lspconfig.rust_analyzer.setup({
+        debounce_text_changes = 2000,
+        settings = {
+          ['rust-analyzer'] = {
+            checkOnSave = {
+              enable = true,
+              command = "clippy",
+              extraArgs = {"--no-deps"}
+            },
+            lens = {
+              enable = false
+            }
+          }
+        }
+      })
     end
   },
   {
@@ -44,7 +66,17 @@ require('lazy').setup({
   {
     'nvim-telescope/telescope.nvim',
     tag = '0.1.8',
-    dependencies = { 'nvim-lua/plenary.nvim' }
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('telescope').setup({
+        defaults = {
+          file_ignore_patterns = {
+            '.git',
+            'target'
+          }
+        }
+      })
+    end
   },
   {
     'Tengu712/marks-popup.nvim',
