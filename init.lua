@@ -47,22 +47,23 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' }
   },
   {
-    'Tengu712/marks-popup.nvim'
+    'Tengu712/marks-popup.nvim',
+    config = function()
+      require('marks-popup').setup()
+    end
   }
 })
 
-require('marks-popup').setup()
-
 -------------------------------------------------------------------------------
 
-vim.api.nvim_create_autocmd("BufEnter", {
-  pattern = "*",
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = '*',
   callback = function()
     if vim.b.first_opened == nil then
       vim.b.first_opened = true
 
       vim.opt_local.list = true
-      vim.opt_local.listchars = "tab:->,trail:~,nbsp:+"
+      vim.opt_local.listchars = 'tab:->,trail:~,nbsp:+'
 
       vim.opt_local.tabstop = 4
       vim.opt_local.softtabstop = 4
@@ -70,8 +71,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
       vim.opt_local.autoindent = false
       vim.opt_local.smartindent = false
       vim.opt_local.smarttab = false
-      vim.opt_local.indentexpr = ""
-      vim.opt_local.indentkeys = ""
+      vim.opt_local.indentexpr = ''
+      vim.opt_local.indentkeys = ''
     end
   end,
 })
