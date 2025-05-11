@@ -197,6 +197,7 @@ vim.o.clipboard = 'unnamedplus'
 
 vim.keymap.set('i', 'jj', '<ESC>', { noremap = true, silent = true, desc = 'jjを打鍵してノーマルモードに戻る' })
 vim.keymap.set('t', '<C-W>', '<C-\\><C-N>', { noremap = true, silent = true, desc = '端末モードを脱出する' })
+vim.keymap.set('n', '<Leader>h', ':noh<CR>', { noremap = true, silent = true, desc = 'ハイライトを削除' })
 vim.keymap.set('n', '<Leader>rt', ':belowright vertical terminal<CR>:vertical resize 60<CR>i', { noremap = true, silent = true, desc = '画面右側にターミナルを開く' })
 vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = 'Telescopeでファイル検索を行う' })
 vim.keymap.set('n', '<leader>fg', require('telescope.builtin').live_grep, { desc = 'Telescopeでテキスト検索を行う' })
