@@ -22,6 +22,14 @@ vim.g.maplocalleader = ' '
 -- Install or load plugins
 require('lazy').setup({
   {
+    'Mofiqul/vscode.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require('vscode').setup({})
+    end
+  },
+  {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
@@ -59,11 +67,27 @@ require('lazy').setup({
     config = function()
       vim.diagnostic.config({
         update_in_insert = true,
-        virtual_text = true,
-        signs = true,
+        virtual_text = false,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "",
+            [vim.diagnostic.severity.HINT] = "",
+          },
+          numhl = {
+            [vim.diagnostic.severity.ERROR] = "DiagnosticLineNrError",
+            [vim.diagnostic.severity.WARN] = "DiagnosticLineNrWarn",
+            [vim.diagnostic.severity.INFO] = "DiagnosticLineNrInfo",
+            [vim.diagnostic.severity.HINT] = "DiagnosticLineNrHint",
+          },
+          linehl = {},
+        },
         underline = true,
-        severity_sort = true
+        severity_sort = true,
+        float = { border = "rounded" }
       })
+      vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
       local lspconfig = require('lspconfig')
       lspconfig.lua_ls.setup({})
       lspconfig.rust_analyzer.setup({
@@ -117,9 +141,22 @@ require('lazy').setup({
       require('marks-popup').setup()
     end
   }
-})
+},
+{ rocks = { enabled = false } })
 
 -------------------------------------------------------------------------------
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  group = vim.api.nvim_create_augroup("MyDiagnosticHighlights", { clear = true }),
+  callback = function()
+    vim.api.nvim_set_hl(0, "DiagnosticLineNrError", { fg = "#FF0000", bold = true })
+    vim.api.nvim_set_hl(0, "DiagnosticLineNrWarn",  { fg = "#FFA500", bold = true })
+    vim.api.nvim_set_hl(0, "DiagnosticLineNrInfo",  { fg = "#00FFFF", bold = true })
+    vim.api.nvim_set_hl(0, "DiagnosticLineNrHint",  { fg = "#00FF00", bold = true })
+  end,
+})
+vim.cmd('colorscheme vscode')
 
 vim.api.nvim_create_autocmd('BufEnter', {
   pattern = '*',
@@ -143,6 +180,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 })
 
 vim.o.number = true
+vim.o.wrap = false
 vim.o.clipboard = 'unnamedplus'
 
 vim.keymap.set('i', 'jj', '<ESC>', { noremap = true, silent = true, desc = 'jjを打鍵してノーマルモードに戻る' })
