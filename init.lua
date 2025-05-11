@@ -61,6 +61,13 @@ require('lazy').setup({
     version = '*',
     opts = { view = { style = "sign" } },
   },
+  -- Terminal
+  {
+    'akinsho/toggleterm.nvim',
+    config = function()
+      require('toggleterm').setup({ open_mapping = '<c-t>' })
+    end,
+  },
   -- Finder
   {
     'nvim-telescope/telescope.nvim',
