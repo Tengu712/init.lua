@@ -181,6 +181,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 
 vim.o.number = true
 vim.o.wrap = false
+vim.o.signcolumn = 'yes'
 vim.o.clipboard = 'unnamedplus'
 
 vim.keymap.set('i', 'jj', '<ESC>', { noremap = true, silent = true, desc = 'jjを打鍵してノーマルモードに戻る' })
