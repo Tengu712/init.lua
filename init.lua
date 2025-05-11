@@ -46,6 +46,15 @@ require('lazy').setup({
     end
   },
   {
+    'echasnovski/mini.diff',
+    version = '*',
+    opts = {
+      view = {
+        style = "sign"
+      }
+    }
+  },
+  {
     'neovim/nvim-lspconfig',
     config = function()
       vim.diagnostic.config({
