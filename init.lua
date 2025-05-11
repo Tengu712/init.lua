@@ -21,14 +21,16 @@ vim.g.maplocalleader = ' '
 
 -- Install or load plugins
 require('lazy').setup({
+  -- Color theme
   {
     'Mofiqul/vscode.nvim',
     lazy = false,
     priority = 1000,
     config = function()
       require('vscode').setup({})
-    end
+    end,
   },
+  -- Status line
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -40,7 +42,7 @@ require('lazy').setup({
           lualine_c = {'filename'},
           lualine_x = {'encoding', 'fileformat', 'filetype'},
           lualine_y = {},
-          lualine_z = {'location'}
+          lualine_z = {'location'},
         },
         inactive_sections = {
           lualine_a = {},
@@ -48,20 +50,34 @@ require('lazy').setup({
           lualine_c = {'filename'},
           lualine_x = {'location'},
           lualine_y = {},
-          lualine_z = {}
+          lualine_z = {},
         },
       })
-    end
+    end,
   },
+  -- Git diff
   {
     'echasnovski/mini.diff',
     version = '*',
-    opts = {
-      view = {
-        style = "sign"
-      }
-    }
+    opts = { view = { style = "sign" } },
   },
+  -- Finder
+  {
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.8',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('telescope').setup({
+        defaults = {
+          file_ignore_patterns = {
+            '.git',
+            'target',
+          },
+        },
+      })
+    end,
+  },
+  -- LSP
   {
     'neovim/nvim-lspconfig',
     config = function()
@@ -85,11 +101,15 @@ require('lazy').setup({
         },
         underline = true,
         severity_sort = true,
-        float = { border = "rounded" }
+        float = { border = "rounded" },
       })
+
       vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
+
       local lspconfig = require('lspconfig')
+
       lspconfig.lua_ls.setup({})
+
       lspconfig.rust_analyzer.setup({
         debounce_text_changes = 2000,
         settings = {
@@ -97,50 +117,34 @@ require('lazy').setup({
             checkOnSave = {
               enable = true,
               command = "clippy",
-              extraArgs = {"--no-deps"}
+              extraArgs = {"--no-deps"},
             },
-            lens = {
-              enable = false
-            }
-          }
-        }
+            lens = { enable = false },
+          },
+        },
       })
-    end
+    end,
   },
+  -- Other convinient plugins
   {
     'phaazon/hop.nvim',
     branch = 'v2',
+    keys = {
+      {mode = '', '<Leader><Leader>', ':HopWord<CR>', desc = 'HopWordを起動する'},
+      {mode = '', '<Leader>l', ':HopLine<CR>', desc = 'HopLineを起動する'},
+    },
     config = function()
       require('hop').setup {
         multi_windows = true,
       }
     end,
-    keys = {
-      {mode = '', '<Leader><Leader>', ':HopWord<CR>', desc = 'HopWordを起動する'},
-      {mode = '', '<Leader>l', ':HopLine<CR>', desc = 'HopLineを起動する'},
-    }
-  },
-  {
-    'nvim-telescope/telescope.nvim',
-    tag = '0.1.8',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      require('telescope').setup({
-        defaults = {
-          file_ignore_patterns = {
-            '.git',
-            'target'
-          }
-        }
-      })
-    end
   },
   {
     'Tengu712/marks-popup.nvim',
     config = function()
       require('marks-popup').setup()
-    end
-  }
+    end,
+  },
 },
 { rocks = { enabled = false } })
 
