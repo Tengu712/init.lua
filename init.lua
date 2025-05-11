@@ -61,6 +61,20 @@ require('lazy').setup({
     version = '*',
     opts = { view = { style = "sign" } },
   },
+  -- Buffer list
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    lazy = false,
+    opts = {
+      window = { width = 20 },
+    },
+  },
   -- Terminal
   {
     'akinsho/toggleterm.nvim',
@@ -111,8 +125,6 @@ require('lazy').setup({
         float = { border = "rounded" },
       })
 
-      vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
-
       local lspconfig = require('lspconfig')
 
       lspconfig.lua_ls.setup({})
@@ -157,6 +169,22 @@ require('lazy').setup({
 
 -------------------------------------------------------------------------------
 
+local function open_or_focus_neotree()
+  local win = nil
+  for _, n in ipairs(vim.api.nvim_list_wins()) do
+    local name = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(n))
+    if name:match('neo%-tree .* buffers') then
+      win = n
+      break
+    end
+  end
+  if win then
+    vim.api.nvim_set_current_win(win)
+  else
+    vim.cmd('Neotree buffers left')
+  end
+end
+
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
   group = vim.api.nvim_create_augroup("MyDiagnosticHighlights", { clear = true }),
@@ -168,6 +196,30 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 vim.cmd('colorscheme vscode')
+
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    vim.api.nvim_create_user_command('BD', function()
+      local check = function(buf)
+        return vim.api.nvim_buf_get_option(buf, 'buflisted') and vim.api.nvim_buf_get_option(buf, 'buftype') == ''
+      end
+
+      if not check(vim.api.nvim_get_current_buf()) then
+        vim.cmd('q')
+        return
+      end
+
+      local bufs = vim.tbl_filter(check, vim.api.nvim_list_bufs())
+      if #bufs <= 1 then
+        vim.cmd('qa')
+      else
+        vim.cmd('bd')
+      end
+    end, { nargs = '?', complete = 'buffer' })
+    vim.cmd([[cnoreabbrev <expr>  q (getcmdtype() == ':' && getcmdline() ==  'q') ?       'BD' :  'q']])
+    vim.cmd([[cnoreabbrev <expr> wq (getcmdtype() == ':' && getcmdline() == 'wq') ? 'w<CR>:BD' : 'wq']])
+  end
+})
 
 vim.api.nvim_create_autocmd('BufEnter', {
   pattern = '*',
@@ -197,6 +249,9 @@ vim.o.clipboard = 'unnamedplus'
 
 vim.keymap.set('i', 'jj', '<ESC>', { noremap = true, silent = true, desc = 'jjを打鍵してノーマルモードに戻る' })
 vim.keymap.set('t', '<C-W>', '<C-\\><C-N>', { noremap = true, silent = true, desc = '端末モードを脱出する' })
+vim.keymap.set('n', '<leader>ll', open_or_focus_neotree, { noremap = true, silent = true, desc = 'バッファ一覧を表示' })
+vim.keymap.set('n', '<leader>lc', ':Neotree close<CR>', { noremap = true, silent = true, desc = 'バッファ一覧を非表示' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'コード解析メッセージを表示' })
 vim.keymap.set('n', '<Leader>h', ':noh<CR>', { noremap = true, silent = true, desc = 'ハイライトを削除' })
 vim.keymap.set('n', '<Leader>rt', ':belowright vertical terminal<CR>:vertical resize 60<CR>i', { noremap = true, silent = true, desc = '画面右側にターミナルを開く' })
 vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = 'Telescopeでファイル検索を行う' })
