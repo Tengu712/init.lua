@@ -101,6 +101,7 @@ require('lazy').setup({
   -- LSP
   {
     'neovim/nvim-lspconfig',
+    dependencies = { 'saghen/blink.cmp' },
     config = function()
       vim.diagnostic.config({
         update_in_insert = true,
@@ -126,10 +127,12 @@ require('lazy').setup({
       })
 
       local lspconfig = require('lspconfig')
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-      lspconfig.lua_ls.setup({})
+      lspconfig.lua_ls.setup({ capabilities = capabilities })
 
       lspconfig.rust_analyzer.setup({
+        capabilities = capabilities,
         debounce_text_changes = 2000,
         settings = {
           ['rust-analyzer'] = {
@@ -140,6 +143,25 @@ require('lazy').setup({
             },
             lens = { enable = false },
           },
+        },
+      })
+    end,
+  },
+  -- Completion
+  {
+    'saghen/blink.cmp',
+    version = '*',
+    config = function()
+      require('blink.cmp').setup({
+        completion = { documentation = { window = { border = "rounded" } } },
+        keymap = {
+          preset = 'none',
+          ['<C-o>'] = { 'accept' },
+          ['<C-k>'] = { 'select_prev', 'fallback' },
+          ['<C-j>'] = { 'select_next', 'fallback' },
+          ['<C-i>'] = { 'show', 'show_documentation', 'hide_documentation' },
+          ['<C-m>'] = { 'scroll_documentation_up', 'fallback' },
+          ['<C-n>'] = { 'scroll_documentation_down', 'fallback' },
         },
       })
     end,
