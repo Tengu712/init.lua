@@ -222,17 +222,30 @@ vim.cmd('colorscheme vscode')
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
     vim.api.nvim_create_user_command('BD', function()
-      local check = function(buf)
-        return vim.api.nvim_buf_get_option(buf, 'buflisted') and vim.api.nvim_buf_get_option(buf, 'buftype') == ''
+      local check_buffer = function(buf)
+        return vim.api.nvim_buf_get_option(buf, 'buflisted')
+          and vim.api.nvim_buf_get_option(buf, 'buftype') == ''
       end
 
-      if not check(vim.api.nvim_get_current_buf()) then
+      if not check_buffer(vim.api.nvim_get_current_buf()) then
         vim.cmd('q')
         return
       end
 
-      local bufs = vim.tbl_filter(check, vim.api.nvim_list_bufs())
-      if #bufs <= 1 then
+      local visible_bufs = {}
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        if check_buffer(buf) then
+          visible_bufs[buf] = true
+        end
+      end
+
+      local visible_count = 0
+      for _ in pairs(visible_bufs) do
+        visible_count = visible_count + 1
+      end
+
+      if visible_count <= 1 then
         vim.cmd('qa')
       else
         vim.cmd('bd')
