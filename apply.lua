@@ -5,7 +5,7 @@ end
 
 local config_file = config_path .. '/init.lua'
 
-print('Apply init.lua to', config_file, '(y/n)')
+print('Apply init.lua to', config_file, '(y/n)\n>> ')
 local response = io.read()
 if response ~= 'y' then
   return
