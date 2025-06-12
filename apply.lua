@@ -38,7 +38,11 @@ end
 
 local function copy(src, dst)
   if is_windows() then
-    vim.system({ 'xcopy', src, dst, '/E', '/I', '/Y', '/Q' }, { text = true }, job_handler):wait()
+    if vim.loop.fs_stat(src).type == 'file' then
+      vim.system({ 'cmd', '/c', 'copy', src, dst }, { text = true }, job_handler):wait()
+    else
+      vim.system({ 'xcopy', src, dst, '/E', '/I', '/Y', '/Q' }, { text = true }, job_handler):wait()
+    end
   else
     vim.system({ 'cp', '-r', src, dst }, { text = true }, job_handler):wait()
   end
