@@ -10,42 +10,33 @@ if response ~= 'y' then
   return
 end
 
-vim.fn.mkdir(config_path .. '/config', 'p')
-vim.fn.mkdir(config_path .. '/plugins', 'p')
-
-local function is_windows()
-  return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
-end
-
 local function job_handler(job)
   if job.code ~= 0 then
     print(('code: %d, stderr: %s'):format(job.code, job.stderr))
   end
 end
 
-local function remove(trg)
-  if is_windows() then
-    vim.system({ 'rmdir', '/S', '/Q', trg }, { text = true }, job_handler):wait()
-  else
-    vim.system({ 'rm', '-rf', trg }, { text = true }, job_handler):wait()
-  end
-end
-
 local function copy(src, dst)
-  if is_windows() then
-    vim.system({ 'xcopy', '/Y', src, dst }, { text = true }, job_handler):wait()
+  if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
+    vim.system({ 'cmd', '/c', 'copy', src, dst, '/Y' }, { text = true }, job_handler):wait()
   else
     vim.system({ 'cp', '-r', src, dst }, { text = true }, job_handler):wait()
   end
 end
 
-local function copy_config(src, dst)
+local function copy_dir(src, dst)
   if vim.loop.fs_stat(dst) then
-    remove(dst)
+    vim.fn.delete(dst, 'rf')
   end
+  vim.fn.mkdir(dst)
   copy(src, dst)
 end
 
-copy_config('./init.lua', config_path .. '/init.lua')
-copy_config('./config', config_path .. '/config')
-copy_config('./plugins', config_path .. '/plugins')
+local function n(a, b)
+  local res = string.gsub(a .. b, '/', '\\')
+  return res
+end
+
+copy(n(vim.fn.getcwd(), '/init.lua'), n(config_path,'/init.lua'))
+copy_dir(n(vim.fn.getcwd(), '/config'), n(config_path, '/config'))
+copy_dir(n(vim.fn.getcwd(), '/plugins'), n(config_path, '/plugins'))
