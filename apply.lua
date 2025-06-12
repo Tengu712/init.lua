@@ -10,6 +10,10 @@ if response ~= 'y' then
   return
 end
 
+local function is_windows()
+  return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
+end
+
 local function job_handler(job)
   if job.code ~= 0 then
     print(('code: %d, stderr: %s'):format(job.code, job.stderr))
@@ -17,7 +21,7 @@ local function job_handler(job)
 end
 
 local function copy(src, dst)
-  if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
+  if is_windows() then
     vim.system({ 'cmd', '/c', 'copy', src, dst, '/Y' }, { text = true }, job_handler):wait()
   else
     vim.system({ 'cp', '-r', src, dst }, { text = true }, job_handler):wait()
@@ -33,8 +37,12 @@ local function copy_dir(src, dst)
 end
 
 local function n(a, b)
-  local res = string.gsub(a .. b, '/', '\\')
-  return res
+  if is_windows() then
+    local res = string.gsub(a .. b, '/', '\\')
+    return res
+  else
+    return vim.fs.normalize(a .. b)
+  end
 end
 
 copy(n(vim.fn.getcwd(), '/init.lua'), n(config_path,'/init.lua'))
