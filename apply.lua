@@ -29,7 +29,6 @@ config_lua_path = n(config_path, '/lua')
 if vim.loop.fs_stat(config_lua_path) then
   vim.fn.delete(config_lua_path, 'rf')
 end
-vim.fn.mkdir(config_lua_path)
 
 local function job_handler(job)
   if job.code ~= 0 then
