@@ -4,6 +4,7 @@ if config_path == '' then
   return
 end
 
+-- コピー先の確認
 print('Apply to', config_path, '(y/n)\n>> ')
 local response = io.read()
 if response ~= 'y' then
@@ -12,28 +13,6 @@ end
 
 local function is_windows()
   return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
-end
-
-local function job_handler(job)
-  if job.code ~= 0 then
-    print(('code: %d, stderr: %s'):format(job.code, job.stderr))
-  end
-end
-
-local function copy(src, dst)
-  if is_windows() then
-    vim.system({ 'cmd', '/c', 'copy', src, dst, '/Y' }, { text = true }, job_handler):wait()
-  else
-    vim.system({ 'cp', '-r', src, dst }, { text = true }, job_handler):wait()
-  end
-end
-
-local function copy_dir(src, dst)
-  if vim.loop.fs_stat(dst) then
-    vim.fn.delete(dst, 'rf')
-  end
-  vim.fn.mkdir(dst)
-  copy(src, dst)
 end
 
 local function n(a, b)
@@ -45,6 +24,27 @@ local function n(a, b)
   end
 end
 
+-- luaディレクトリ削除
+config_lua_path = n(config_path, '/lua')
+if vim.loop.fs_stat(config_lua_path) then
+  vim.fn.delete(config_lua_path, 'rf')
+end
+vim.fn.mkdir(config_lua_path)
+
+local function job_handler(job)
+  if job.code ~= 0 then
+    print(('code: %d, stderr: %s'):format(job.code, job.stderr))
+  end
+end
+
+local function copy(src, dst)
+  if is_windows() then
+    vim.system({ 'xcopy', src, dst, '/E', '/I', '/Y', '/Q' }, { text = true }, job_handler):wait()
+  else
+    vim.system({ 'cp', '-r', src, dst }, { text = true }, job_handler):wait()
+  end
+end
+
+-- コピー
 copy(n(vim.fn.getcwd(), '/init.lua'), n(config_path,'/init.lua'))
-copy_dir(n(vim.fn.getcwd(), '/config'), n(config_path, '/config'))
-copy_dir(n(vim.fn.getcwd(), '/plugins'), n(config_path, '/plugins'))
+copy(n(vim.fn.getcwd(), '/lua'), n(config_path, '/lua'))

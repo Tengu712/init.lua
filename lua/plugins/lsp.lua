@@ -62,5 +62,34 @@ return {
         },
       },
     })
+
+    -- Java
+    lspconfig.jdtls.setup({
+      capabilities = capabilities,
+      cmd = {
+        'java',
+        '-Declipse.application=org.eclipse.jdt.ls.core.id1',
+        '-Dosgi.bundles.defaultStartLevel=4',
+        '-Declipse.product=org.eclipse.jdt.ls.core.product',
+        '-Xms1g',
+        '-Xmx2G',
+        '--add-modules=ALL-SYSTEM',
+        '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+        '-jar', os.getenv('JDTLS_PLUGINS') .. '/org.eclipse.equinox.launcher_1.7.0.v20250424-1814.jar',
+        '-configuration', os.getenv('JDTLS_CONFIG'),
+        '-data', vim.fn.expand('~/.cache/jdtls/workspace'),
+      },
+      root_dir = lspconfig.util.root_pattern('.git', 'mvnw', 'gradlew', 'pom.xml', 'build.gradle'),
+      filetypes = { 'java' },
+      settings = {
+        java = {
+          eclipse = { downloadSources = true },
+          configuration = { updateBuildConfiguration = "interactive" },
+          maven = { downloadSources = true },
+          format = { enabled = true },
+        },
+      },
+    })
   end,
 }
