@@ -200,6 +200,49 @@ require('lazy').setup({
 
 -------------------------------------------------------------------------------
 
+local function move_file(new_path)
+  local current_file = vim.fn.expand('%:p')
+  local current_dir = vim.fn.expand('%:p:h')
+
+  if current_file == '' or vim.fn.filereadable(current_file) == 0 then
+    print("Error: No file is currently open or file doesn't exist")
+    return
+  end
+
+  local target_path
+  if vim.fn.fnamemodify(new_path, ':p') == new_path then
+    target_path = new_path
+  else
+    target_path = vim.fn.resolve(current_dir .. '/' .. new_path)
+  end
+
+  local target_dir = vim.fn.fnamemodify(target_path, ':h')
+  if vim.fn.isdirectory(target_dir) == 0 then
+    vim.fn.mkdir(target_dir, 'p')
+  end
+
+  vim.cmd('saveas ' .. vim.fn.fnameescape(target_path))
+
+  local delete_result = vim.fn.delete(current_file)
+  if delete_result == 0 then
+    print("Moved: " .. current_file .. " -> " .. target_path)
+  else
+    print("Warning: Failed to delete original file: " .. current_file)
+  end
+end
+
+vim.api.nvim_create_user_command('MOVE', function(opts)
+  if opts.args == '' then
+    print("Error: :MOVE <target-path>")
+    return
+  end
+  move_file(opts.args)
+end, {
+  nargs = 1,
+  complete = 'file',
+  desc = 'Move current file to a new location'
+})
+
 local function open_or_focus_neotree()
   local win = nil
   for _, n in ipairs(vim.api.nvim_list_wins()) do
