@@ -31,3 +31,6 @@ vim.g.autoformat = false
 
 -- 自動インデントを無効化
 vim.cmd('autocmd FileType * setlocal noautoindent nosmartindent nocindent indentexpr= indentkeys=')
+
+-- Rustでは自動インデントを有効化
+vim.cmd('autocmd FileType rust setlocal autoindent smartindent indentexpr=v:lua.vim.lsp.formatexpr()')
