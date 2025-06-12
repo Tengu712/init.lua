@@ -1,0 +1,66 @@
+return {
+  'neovim/nvim-lspconfig',
+  dependencies = { 'saghen/blink.cmp' },
+  config = function()
+    -- NeovimのLSP設定
+    vim.diagnostic.config({
+      update_in_insert = true,
+      virtual_text = false,
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = "",
+          [vim.diagnostic.severity.WARN] = "",
+          [vim.diagnostic.severity.INFO] = "",
+          [vim.diagnostic.severity.HINT] = "",
+        },
+        numhl = {
+          [vim.diagnostic.severity.ERROR] = "DiagnosticLineNrError",
+          [vim.diagnostic.severity.WARN] = "DiagnosticLineNrWarn",
+          [vim.diagnostic.severity.INFO] = "DiagnosticLineNrInfo",
+          [vim.diagnostic.severity.HINT] = "DiagnosticLineNrHint",
+        },
+        linehl = {},
+      },
+      underline = true,
+      severity_sort = true,
+      float = { border = "rounded" },
+    })
+
+    -- カラースキーム設定
+    vim.api.nvim_create_autocmd("ColorScheme", {
+      pattern = "*",
+      group = vim.api.nvim_create_augroup("MyDiagnosticHighlights", { clear = true }),
+      callback = function()
+        vim.api.nvim_set_hl(0, "DiagnosticLineNrError", { fg = "#FF0000", bold = true })
+        vim.api.nvim_set_hl(0, "DiagnosticLineNrWarn",  { fg = "#FFA500", bold = true })
+        vim.api.nvim_set_hl(0, "DiagnosticLineNrInfo",  { fg = "#00FFFF", bold = true })
+        vim.api.nvim_set_hl(0, "DiagnosticLineNrHint",  { fg = "#00FF00", bold = true })
+      end,
+    })
+
+    -- バインド
+    vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'コード解析メッセージを表示' })
+
+    local lspconfig = require('lspconfig')
+    local capabilities = require('blink.cmp').get_lsp_capabilities()
+
+    -- Lua
+    lspconfig.lua_ls.setup({ capabilities = capabilities })
+
+    -- Rust
+    lspconfig.rust_analyzer.setup({
+      capabilities = capabilities,
+      debounce_text_changes = 2000,
+      settings = {
+        ['rust-analyzer'] = {
+          checkOnSave = {
+            enable = true,
+            command = "clippy",
+            extraArgs = {"--no-deps"},
+          },
+          lens = { enable = false },
+        },
+      },
+    })
+  end,
+}

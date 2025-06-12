@@ -1,30 +1,51 @@
 local config_path = vim.fn.stdpath('config')
 if config_path == '' then
   print('failed to get the config path of nvim.')
+  return
 end
 
-local config_file = config_path .. '/init.lua'
-
-print('Apply init.lua to', config_file, '(y/n)\n>> ')
+print('Apply to', config_path, '(y/n)\n>> ')
 local response = io.read()
 if response ~= 'y' then
   return
 end
 
-local infile = io.open('./init.lua', 'r')
-if not infile then
-  print('failed to open ./init.lua')
+vim.fn.mkdir(config_path .. '/config', 'p')
+vim.fn.mkdir(config_path .. '/plugins', 'p')
+
+local function is_windows()
+  return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
 end
 
-local content = infile:read('*a')
-infile:close()
-
-local outfile = io.open(config_file, 'w')
-if not outfile then
-  print('failed to open', config_file)
+local function job_handler(job)
+  if job.code ~= 0 then
+    print(('code: %d, stderr: %s'):format(job.code, job.stderr))
+  end
 end
 
-outfile:write(content)
-outfile:close()
+local function remove(trg)
+  if is_windows() then
+    vim.system({ 'rmdir', '/S', '/Q', trg }, { text = true }, job_handler):wait()
+  else
+    vim.system({ 'rm', '-rf', trg }, { text = true }, job_handler):wait()
+  end
+end
 
-print("successfully overwrote.")
+local function copy(src, dst)
+  if is_windows() then
+    vim.system({ 'xcopy', '/Y', src, dst }, { text = true }, job_handler):wait()
+  else
+    vim.system({ 'cp', '-r', src, dst }, { text = true }, job_handler):wait()
+  end
+end
+
+local function copy_config(src, dst)
+  if vim.loop.fs_stat(dst) then
+    remove(dst)
+  end
+  copy(src, dst)
+end
+
+copy_config('./init.lua', config_path .. '/init.lua')
+copy_config('./config', config_path .. '/config')
+copy_config('./plugins', config_path .. '/plugins')
