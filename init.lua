@@ -243,6 +243,23 @@ end, {
   desc = 'Move current file to a new location'
 })
 
+vim.api.nvim_create_user_command('KILLTERMS', function()
+  local terms = require('toggleterm.terminal')
+  local flag = false
+  for _, term in pairs(terms.get_all()) do
+    if term:is_open() then
+      term:shutdown()
+      flag = true
+      print("Quit terminal #" .. term.id)
+    end
+  end
+  if flag then
+    print("The above terminals killed.")
+  else
+    print("No terminal is open.")
+  end
+end, { desc = '開いているすべてのターミナルを強制終了する' })
+
 local function open_or_focus_neotree()
   local win = nil
   for _, n in ipairs(vim.api.nvim_list_wins()) do
@@ -343,3 +360,6 @@ vim.keymap.set('n', '<leader>lc', ':Neotree close<CR>', { noremap = true, silent
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'コード解析メッセージを表示' })
 vim.keymap.set('n', '<Leader>h', ':noh<CR>', { noremap = true, silent = true, desc = 'ハイライトを削除' })
 vim.keymap.set('n', '<Leader>rt', ':belowright vertical terminal<CR>:vertical resize 60<CR>i', { noremap = true, silent = true, desc = '画面右側にターミナルを開く' })
+for i = 1, 9 do
+  vim.keymap.set('n', '<C-' .. i .. '>', ':ToggleTerm' .. i .. '<CR>', { noremap = true, silent = true, desc = i .. '番目のターミナルを開く' })
+end
