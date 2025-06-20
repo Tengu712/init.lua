@@ -25,6 +25,7 @@ require('lazy').setup({
   require('plugins.term'),
   require('plugins.status'),
   require('plugins.diff'),
+  require('plugins.diffview'),
   require('plugins.filer'),
   require('plugins.finder'),
   require('plugins.lsp'),
