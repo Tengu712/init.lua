@@ -37,6 +37,7 @@ require('lazy').setup({
 -- Load config modules
 require('config.common')
 require('config.keymap')
+require('config.lf')
 require('config.move')
 require('config.quit')
 
