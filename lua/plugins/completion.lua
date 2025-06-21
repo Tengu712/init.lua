@@ -12,6 +12,8 @@ return {
         ['<C-i>'] = { 'show', 'show_documentation', 'hide_documentation' },
         ['<C-m>'] = { 'scroll_documentation_up', 'fallback' },
         ['<C-n>'] = { 'scroll_documentation_down', 'fallback' },
+        ['<Tab>'] = { 'fallback' },
+        ['<S-Tab>'] = { 'fallback' },
       },
     })
   end,

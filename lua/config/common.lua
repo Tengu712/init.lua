@@ -20,7 +20,7 @@ vim.o.listchars = 'tab:>-,trail:~,nbsp:+'
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 
--- 行等のタブ入力はインデント
+-- 行頭のタブ入力はインデント
 vim.o.smarttab = true
 
 -- タブ入力はタブ入力
@@ -28,6 +28,9 @@ vim.o.expandtab = false
 
 -- フォーマッタは使わない
 vim.g.autoformat = false
+
+-- すべてのファイルタイプでタブ設定を強制
+vim.cmd('autocmd FileType * setlocal noexpandtab tabstop=4 softtabstop=4 shiftwidth=4')
 
 -- 自動インデントを無効化
 vim.cmd('autocmd FileType * setlocal noautoindent nosmartindent nocindent indentexpr= indentkeys=')
