@@ -102,6 +102,28 @@ return {
       },
     })
 
+    -- C/C++
+    lspconfig.clangd.setup({
+      capabilities = capabilities,
+      cmd = {
+        'clangd',
+        '--background-index',
+        '--clang-tidy',
+        '--completion-style=detailed',
+        '--function-arg-placeholders',
+        '--fallback-style=llvm',
+      },
+      init_options = {
+        usePlaceholders = true,
+        clangdFileStatus = true,
+      },
+      settings = {
+        clangd = {
+          semanticHighlighting = true,
+        },
+      },
+    })
+
     -- Java
     setup_jdtls(lspconfig, capabilities)
   end,
