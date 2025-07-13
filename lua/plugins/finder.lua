@@ -2,6 +2,7 @@ local ignores = {
   "--glob", "!.git/",
   "--glob", "!target/",
   "--glob", "!thirdparty/",
+  "--glob", "!vcpkg/",
 }
 
 return {
