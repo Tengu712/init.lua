@@ -3,6 +3,10 @@ return {
   version = '*',
   config = function()
     require('blink.cmp').setup({
+      enabled = function()
+        local filename = vim.fn.expand('%:t')
+        return not vim.endswith(filename, '.md') and not vim.endswith(filename, '.mdx')
+      end,
       completion = { documentation = { window = { border = "rounded" } } },
       keymap = {
         preset = 'none',
