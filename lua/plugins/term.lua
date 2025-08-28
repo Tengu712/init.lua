@@ -9,7 +9,7 @@ return {
 
     -- 0-9トグル
     for i = 1, 9 do
-      vim.keymap.set('n', '<C-' .. i .. '>', ':ToggleTerm' .. i .. '<CR>', { noremap = true, silent = true, desc = i .. '番目のターミナルを開く' })
+      vim.keymap.set('n', '<C-' .. i .. '>', ':TT' .. i .. '<CR>', { noremap = true, silent = true, desc = i .. '番目のターミナルを開く' })
     end
 
     -- ユーザ定義コマンド
