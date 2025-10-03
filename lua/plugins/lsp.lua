@@ -80,15 +80,26 @@ return {
     -- バインド
     vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'コード解析メッセージを表示' })
 
+    local on_attach = function(client, bufnr)
+      vim.keymap.set('n', 'K', vim.lsp.buf.hover, { noremap = true, silent = true, buffer = bufnr, desc = 'ホバー表示' })
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true, buffer = bufnr, desc = '定義元へジャンプ' })
+      vim.keymap.set('n', 'gr', vim.lsp.buf.references, { noremap = true, silent = true, buffer = bufnr, desc = '参照元を一覧表示' })
+      vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { noremap = true, silent = true, buffer = bufnr, desc = '実装へジャンプ' })
+    end
+
     local lspconfig = require('lspconfig')
     local capabilities = require('blink.cmp').get_lsp_capabilities()
 
     -- Lua
-    lspconfig.lua_ls.setup({ capabilities = capabilities })
+    lspconfig.lua_ls.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+    })
 
     -- Rust
     lspconfig.rust_analyzer.setup({
       capabilities = capabilities,
+      on_attach = on_attach,
       debounce_text_changes = 2000,
       settings = {
         ['rust-analyzer'] = {
@@ -105,6 +116,7 @@ return {
     -- C/C++
     lspconfig.clangd.setup({
       capabilities = capabilities,
+      on_attach = on_attach,
       cmd = {
         'clangd',
         '--background-index',
@@ -124,6 +136,14 @@ return {
           semanticHighlighting = true,
         },
       },
+    })
+
+    -- Swift
+    lspconfig.sourcekit.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      filetypes = { 'swift' },
+      root_dir = lspconfig.util.root_pattern('Package.swift', '*.xcodeproj', '*.xcworkspace'),
     })
 
     -- Java
