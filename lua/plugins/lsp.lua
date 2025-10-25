@@ -143,7 +143,8 @@ return {
       capabilities = capabilities,
       on_attach = on_attach,
       filetypes = { 'swift' },
-      root_dir = lspconfig.util.root_pattern('Package.swift', '*.xcodeproj', '*.xcworkspace'),
+      cmd = { 'xcrun', '--toolchain', 'swift', 'sourcekit-lsp' },
+      root_dir = lspconfig.util.root_pattern('Package.swift', '*.xcodeproj', '*.xcworkspace', 'buildServer.json', 'compile_commands.json'),
     })
 
     -- Java
