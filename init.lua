@@ -40,6 +40,7 @@ require('config.common')
 require('config.keymap')
 require('config.lf')
 require('config.move')
+require('config.neovide')
 require('config.quit')
 
 -- Apply colorscheme
