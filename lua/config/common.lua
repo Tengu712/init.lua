@@ -6,6 +6,10 @@ vim.o.number = true
 -- 折り返さない
 vim.o.wrap = false
 
+-- 改行コードはLF
+vim.o.fileformat = 'unix'
+vim.o.fileformats = 'unix,dos'
+
 -- LSPが効いていなくても行数の左にGit diff用の空間を開ける
 vim.o.signcolumn = 'yes'
 
