@@ -28,7 +28,6 @@ require('lazy').setup({
   require('plugins.diffview'),
   require('plugins.filer'),
   require('plugins.finder'),
-  require('plugins.lsp'),
   require('plugins.completion'),
   require('plugins.hop'),
   require('plugins.mark'),
@@ -39,6 +38,7 @@ require('lazy').setup({
 require('config.common')
 require('config.keymap')
 require('config.lf')
+require('config.lsp')
 require('config.move')
 require('config.neovide')
 require('config.quit')
