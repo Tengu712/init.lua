@@ -1,7 +1,3 @@
--- ////////////////////////////////////////////////////////////////////////////
--- 全体設定
--- ////////////////////////////////////////////////////////////////////////////
-
 -- 外観
 vim.diagnostic.config({
   update_in_insert = true,
@@ -47,9 +43,22 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { noremap = true, silent = true, buffer = bufnr, desc = '実装へジャンプ' })
 end
 
--- ////////////////////////////////////////////////////////////////////////////
+-- コマンド
+vim.api.nvim_create_user_command('LSP', function()
+  vim.tbl_map(
+    function(c)
+      print(c.name)
+    end,
+    vim.lsp.get_clients()
+  )
+end, { nargs = 0, desc = '現在のLSPの情報をprintする' })
+
 -- 各言語設定
--- ////////////////////////////////////////////////////////////////////////////
+require('config.lsp.clangd')
+
+
+
+-- TODO: 以降lspディレクトリ下に移す
 
 -- 補完用
 local capabilities = require('blink.cmp').get_lsp_capabilities()
@@ -78,29 +87,6 @@ vim.lsp.config('rust_analyzer', {
 })
 
 -- C/C++
-vim.lsp.config('clangd', {
-  capabilities = capabilities,
-  on_attach = on_attach,
-  cmd = {
-    'clangd',
-    '--background-index',
-    '--clang-tidy',
-    '--completion-style=detailed',
-    '--function-arg-placeholders',
-    '--fallback-style=llvm',
-    '--header-insertion=never',
-  },
-  init_options = {
-    usePlaceholders = true,
-    clangdFileStatus = true,
-    completeUnimported = false,
-  },
-  settings = {
-    clangd = {
-      semanticHighlighting = true,
-    },
-  },
-})
 
 -- Swift
 vim.lsp.config('sourcekit', {
