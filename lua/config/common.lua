@@ -40,4 +40,4 @@ vim.cmd('autocmd FileType * setlocal noexpandtab tabstop=4 softtabstop=4 shiftwi
 vim.cmd('autocmd FileType * setlocal noautoindent nosmartindent nocindent indentexpr= indentkeys=')
 
 -- Rustでは自動インデントを有効化
-vim.cmd('autocmd FileType rust setlocal autoindent smartindent indentexpr=v:lua.vim.lsp.formatexpr()')
+vim.cmd('autocmd FileType rust setlocal autoindent smartindent indentexpr=v:lua.vim.lsp.formatexpr() expandtab tabstop=4 softtabstop=4 shiftwidth=4')
