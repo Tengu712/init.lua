@@ -55,6 +55,7 @@ end, { nargs = 0, desc = '現在のLSPの情報をprintする' })
 
 -- 各言語設定
 require('config.lsp.clangd')
+require('config.lsp.rust_analyzer')
 
 
 
@@ -67,23 +68,6 @@ local capabilities = require('blink.cmp').get_lsp_capabilities()
 vim.lsp.config('lua_ls', {
   capabilities = capabilities,
   on_attach = on_attach,
-})
-
--- Rust
-vim.lsp.config('rust_analyzer', {
-  capabilities = capabilities,
-  on_attach = on_attach,
-  debounce_text_changes = 2000,
-  settings = {
-    ['rust-analyzer'] = {
-      checkOnSave = {
-        enable = true,
-        command = 'clippy',
-        extraArgs = {'--no-deps'},
-      },
-      lens = { enable = false },
-    },
-  },
 })
 
 -- C/C++
