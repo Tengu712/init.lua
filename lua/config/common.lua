@@ -3,6 +3,9 @@
 -- 行数表示
 vim.o.number = true
 
+-- カーソルラインへのハイライトをできるように
+vim.o.cursorline = true
+
 -- 折り返さない
 vim.o.wrap = false
 
@@ -29,6 +32,9 @@ vim.o.smarttab = true
 
 -- タブ入力はタブ入力
 vim.o.expandtab = false
+
+-- statusline非表示
+vim.o.laststatus = 0
 
 -- フォーマッタは使わない
 vim.g.autoformat = false

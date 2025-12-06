@@ -23,7 +23,6 @@ vim.g.maplocalleader = ' '
 require('lazy').setup({
   require('plugins.theme'),
   require('plugins.term'),
-  require('plugins.status'),
   require('plugins.diff'),
   require('plugins.diffview'),
   require('plugins.filer'),
@@ -35,10 +34,11 @@ require('lazy').setup({
 { rocks = { enabled = false } })
 
 -- Load config modules
+require('config.command')
 require('config.common')
 require('config.keymap')
-require('config.lf')
 require('config.lsp')
+require('config.mode')
 require('config.move')
 require('config.neovide')
 require('config.quit')
