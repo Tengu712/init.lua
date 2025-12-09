@@ -57,13 +57,15 @@ local function setup_lsp(opts)
       -- root_dirが相対パスなら起動しない
       -- NOTE: diffview.nvimはroot_dirが.になり、これを許すと多重起動に繋がる
       if not root_dir or root_dir:match('^%.') then
+        vim.notify('tried to start LSP, ' .. opts.name .. ', at invalid root_dir: ' .. root_dir, vim.log.levels.INFO)
         return
       end
 
-      -- 同じroot_dirを持つLSPを起動しない
+      -- 同じroot_dirを持つLSPクライアントがあれば、開いたバッファにアタッチして・startしない
       local clients = vim.lsp.get_clients({ name = opts.name })
       for _, client in ipairs(clients) do
         if client.config.root_dir == root_dir then
+          vim.lsp.buf_attach_client(args.buf, client.id)
           return
         end
       end
