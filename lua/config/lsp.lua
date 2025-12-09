@@ -47,7 +47,7 @@ end
 vim.api.nvim_create_user_command('LSP', function()
   vim.tbl_map(
     function(c)
-      print(c.name)
+      print('name=' .. c.name .. ' root=' .. c.config.root_dir)
     end,
     vim.lsp.get_clients()
   )
