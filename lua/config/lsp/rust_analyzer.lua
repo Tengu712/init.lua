@@ -1,12 +1,8 @@
-vim.lsp.config['rust-analyzer'] = {
-  capabilities = require('blink.cmp').get_lsp_capabilities(),
-
-  filetypes = {'rust'},
-
-  root_markers = {'Cargo.toml', '.git'},
-
+return {
+  name = 'rust-analyzer',
+  pattern = {'rust'},
+  root_dir = {'Cargo.toml', '.git'},
   cmd = {'rust-analyzer'},
-
   settings = {
     ['rust-analyzer'] = {
       checkOnSave = {
@@ -17,10 +13,7 @@ vim.lsp.config['rust-analyzer'] = {
       lens = { enable = false },
     },
   },
-
   flags = {
     debounce_text_changes = 2000,
   },
 }
-
-vim.lsp.enable('rust-analyzer')

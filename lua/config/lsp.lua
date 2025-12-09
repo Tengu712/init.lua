@@ -34,15 +34,6 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   end,
 })
 
--- バインド
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'コード解析メッセージを表示' })
-local on_attach = function(client, bufnr)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, { noremap = true, silent = true, buffer = bufnr, desc = 'ホバー表示' })
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true, buffer = bufnr, desc = '定義元へジャンプ' })
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, { noremap = true, silent = true, buffer = bufnr, desc = '参照元を一覧表示' })
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { noremap = true, silent = true, buffer = bufnr, desc = '実装へジャンプ' })
-end
-
 -- コマンド
 vim.api.nvim_create_user_command('LSP', function()
   vim.tbl_map(
@@ -53,9 +44,52 @@ vim.api.nvim_create_user_command('LSP', function()
   )
 end, { nargs = 0, desc = '現在のLSPの情報をprintする' })
 
+-- バインド
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'コード解析メッセージを表示' })
+
+-- セットアップ関数
+local function setup_lsp(opts)
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = opts.pattern,
+    callback = function(args)
+      local root_dir = vim.fs.root(args.buf, opts.root_dir)
+
+      -- root_dirが相対パスなら起動しない
+      -- NOTE: diffview.nvimはroot_dirが.になり、これを許すと多重起動に繋がる
+      if not root_dir or root_dir:match('^%.') then
+        return
+      end
+
+      -- 同じroot_dirを持つLSPを起動しない
+      local clients = vim.lsp.get_clients({ name = opts.name })
+      for _, client in ipairs(clients) do
+        if client.config.root_dir == root_dir then
+          return
+        end
+      end
+
+      vim.lsp.start {
+        name = opts.name,
+        cmd = opts.cmd,
+        root_dir = root_dir,
+        init_options = opts.init_options,
+        settings = opts.settings,
+        flags = opts.flags,
+        capabilities = require('blink.cmp').get_lsp_capabilities(),
+        on_attach = function(client, bufnr)
+          vim.keymap.set('n', 'K',  vim.lsp.buf.hover,          { noremap = true, silent = true, buffer = bufnr, desc = 'ホバー表示' })
+          vim.keymap.set('n', 'gd', vim.lsp.buf.definition,     { noremap = true, silent = true, buffer = bufnr, desc = '定義元へジャンプ' })
+          vim.keymap.set('n', 'gr', vim.lsp.buf.references,     { noremap = true, silent = true, buffer = bufnr, desc = '参照元を一覧表示' })
+          vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { noremap = true, silent = true, buffer = bufnr, desc = '実装へジャンプ' })
+        end,
+      }
+    end,
+  })
+end
+
 -- 各言語設定
-require('config.lsp.clangd')
-require('config.lsp.rust_analyzer')
+setup_lsp(require('config.lsp.clangd'))
+setup_lsp(require('config.lsp.rust_analyzer'))
 
 
 
