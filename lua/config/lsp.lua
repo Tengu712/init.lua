@@ -91,6 +91,7 @@ end
 
 -- 各言語設定
 setup_lsp(require('config.lsp.clangd'))
+setup_lsp(require('config.lsp.gopls'))
 setup_lsp(require('config.lsp.rust_analyzer'))
 
 
