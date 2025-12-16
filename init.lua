@@ -45,3 +45,9 @@ require('config.quit')
 
 -- Apply colorscheme
 vim.cmd('colorscheme vscode')
+
+-- Additional settings
+local add_path = vim.fn.stdpath('config') .. '/add.lua'
+if vim.fn.filereadable(add_path) == 1 then
+  dofile(add_path)
+end
