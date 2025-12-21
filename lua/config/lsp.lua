@@ -66,6 +66,15 @@ local function setup_lsp(opts)
       for _, client in ipairs(clients) do
         if client.config.root_dir == root_dir then
           vim.lsp.buf_attach_client(args.buf, client.id)
+          -- 遅延して開き直す
+          -- NOTE: こうしないとハイライトが効かない場合がある
+          --       :eをするとハイライトされるのでそれを再現する
+          vim.defer_fn(function()
+            if vim.api.nvim_buf_is_valid(args.buf) then
+              vim.lsp.semantic_tokens.force_refresh(args.buf)
+              vim.cmd('redraw!')
+            end
+          end, 500)
           return
         end
       end
@@ -93,6 +102,7 @@ end
 setup_lsp(require('config.lsp.clangd'))
 setup_lsp(require('config.lsp.gopls'))
 setup_lsp(require('config.lsp.rust_analyzer'))
+setup_lsp(require('config.lsp.sourcekit'))
 
 
 
@@ -105,17 +115,6 @@ local capabilities = require('blink.cmp').get_lsp_capabilities()
 vim.lsp.config('lua_ls', {
   capabilities = capabilities,
   on_attach = on_attach,
-})
-
--- C/C++
-
--- Swift
-vim.lsp.config('sourcekit', {
-  capabilities = capabilities,
-  on_attach = on_attach,
-  filetypes = { 'swift' },
-  cmd = { 'xcrun', '--toolchain', 'swift', 'sourcekit-lsp' },
-  root_markers = {'Package.swift', '*.xcodeproj', '*.xcworkspace', 'buildServer.json', 'compile_commands.json'},
 })
 
 -- Java
