@@ -10,6 +10,9 @@ return {
     -- 0-9トグル
     for i = 1, 9 do
       vim.keymap.set('n', '<C-' .. i .. '>', ':ToggleTerm' .. i .. '<CR>', { noremap = true, silent = true, desc = i .. '番目のターミナルを開く' })
+      vim.api.nvim_create_user_command('TT' .. i, function()
+        vim.cmd(':ToggleTerm' .. i)
+      end, {  desc = '番目のターミナルを開く' })
     end
 
     -- ユーザ定義コマンド
