@@ -10,3 +10,9 @@ end, { nargs = 0, desc = 'ファイルのCRLFをLFに置換する' })
 vim.api.nvim_create_user_command('STATUS', function()
   vim.cmd('set fileformat? fileencoding?')
 end, { nargs = 0, desc = '本来statuslineに書かれる情報を確認する' })
+
+vim.api.nvim_create_user_command('FMT', function()
+  if vim.bo.filetype == 'rust' then
+    vim.cmd('!cargo fmt')
+  end
+end, { nargs = 0, desc = '現在開いているバッファのファイルタイプに応じてフォーマットコマンドを実行する' })
