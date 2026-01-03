@@ -16,3 +16,15 @@ vim.api.nvim_create_user_command('FMT', function()
     vim.cmd('!cargo fmt')
   end
 end, { nargs = 0, desc = '現在開いているバッファのファイルタイプに応じてフォーマットコマンドを実行する' })
+
+vim.api.nvim_create_user_command('DARK', function()
+  vim.o.background = 'dark'
+  require('vscode').setup({})
+  vim.cmd.colorscheme('vscode')
+end, { nargs = 0, desc = 'ダークテーマに切り替える' })
+
+vim.api.nvim_create_user_command('LIGHT', function()
+  vim.o.background = 'light'
+  require('solarized').setup({})
+  vim.cmd.colorscheme('solarized')
+end, { nargs = 0, desc = 'ライトテーマに切り替える' })

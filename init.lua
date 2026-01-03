@@ -21,7 +21,8 @@ vim.g.maplocalleader = ' '
 
 -- Install or load plugins
 require('lazy').setup({
-  require('plugins.theme'),
+  require('plugins.theme-dark'),
+  require('plugins.theme-light'),
   require('plugins.term'),
   require('plugins.diff'),
   require('plugins.diffview'),
@@ -42,9 +43,6 @@ require('config.mode')
 require('config.move')
 require('config.neovide')
 require('config.quit')
-
--- Apply colorscheme
-vim.cmd('colorscheme vscode')
 
 -- Additional settings
 local add_path = vim.fn.stdpath('config') .. '/add.lua'
