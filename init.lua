@@ -37,6 +37,7 @@ require('lazy').setup({
 -- Load config modules
 require('config.command')
 require('config.common')
+require('config.fold')
 require('config.keymap')
 require('config.lsp')
 require('config.mode')
