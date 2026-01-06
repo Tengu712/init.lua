@@ -39,6 +39,26 @@ vim.o.laststatus = 0
 -- フォーマッタは使わない
 vim.g.autoformat = false
 
+-- カスタム fold 表示
+_G.custom_fold_text = function()
+  local line = vim.fn.getline(vim.v.foldstart)
+  local line_count = vim.v.foldend - vim.v.foldstart + 1
+
+  local width = vim.fn.winwidth(0)
+  local number_width = vim.wo.number and vim.wo.numberwidth or 0
+  local sign_width = vim.wo.signcolumn == 'yes' and 2 or 0
+  local fold_width = vim.wo.foldcolumn
+  local available_width = width - number_width - sign_width - fold_width
+
+  local text = line:gsub('\t', string.rep(' ', vim.bo.tabstop))
+  local suffix = string.format('%d lines', line_count)
+  local padding_width = available_width - vim.fn.strdisplaywidth(text) - vim.fn.strdisplaywidth(suffix)
+  local padding = string.rep(' ', math.max(0, padding_width))
+
+  return text .. padding .. suffix
+end
+vim.o.foldtext = 'v:lua.custom_fold_text()'
+
 -- すべてのファイルタイプでタブ設定を強制
 vim.cmd('autocmd FileType * setlocal noexpandtab tabstop=4 softtabstop=4 shiftwidth=4')
 
