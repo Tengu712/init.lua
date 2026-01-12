@@ -21,8 +21,6 @@ vim.g.maplocalleader = ' '
 
 -- Install or load plugins
 require('lazy').setup({
-  require('plugins.theme-dark'),
-  require('plugins.theme-light'),
   require('plugins.term'),
   require('plugins.diff'),
   require('plugins.diffview'),
@@ -39,9 +37,9 @@ require('config.command')
 require('config.common')
 require('config.keymap')
 require('config.lsp')
-require('config.mode')
 require('config.move')
 require('config.neovide')
+require('config.theme')
 require('config.quit')
 
 -- Additional settings
