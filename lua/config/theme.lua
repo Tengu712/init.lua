@@ -14,6 +14,8 @@ vim.cmd [[
 vim.cmd [[
   highlight LineNr       cterm=NONE ctermfg=244 gui=NONE guifg=#808080
   highlight CursorLineNr cterm=NONE ctermfg=255 gui=NONE guifg=#FFFFFF
+  highlight SpecialKey   cterm=NONE ctermfg=244 gui=NONE guifg=#808080
+  highlight Whitespace   cterm=NONE ctermfg=244 gui=NONE guifg=#808080
 ]]
 
 local mode_color = {
