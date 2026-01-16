@@ -16,3 +16,20 @@ vim.api.nvim_create_user_command('FMT', function()
     vim.cmd('!cargo fmt')
   end
 end, { nargs = 0, desc = '現在開いているバッファのファイルタイプに応じてフォーマットコマンドを実行する' })
+
+vim.api.nvim_create_user_command('X', function(opts)
+  vim.cmd [[redir => g:tmp_cmd_output]]
+  vim.cmd('silent! ' .. opts.args)
+  vim.cmd [[
+    redir END
+    tabnew
+    put =g:tmp_cmd_output
+    1d_
+    normal! gg
+  ]]
+  vim.api.nvim_del_var('tmp_cmd_output')
+  local opt = vim.opt_local
+  opt.buftype = 'nofile'
+  opt.bufhidden = 'wipe'
+  opt.swapfile = false
+end, { nargs = '+', complete = 'command', desc = 'コマンド出力を新しいタブへ' })
