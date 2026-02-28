@@ -70,3 +70,6 @@ vim.cmd('autocmd FileType rust setlocal autoindent smartindent indentexpr=v:lua.
 
 -- Swiftでは自動インデントを有効化
 vim.cmd('autocmd FileType swift setlocal autoindent smartindent indentexpr=v:lua.vim.lsp.formatexpr() expandtab tabstop=4 softtabstop=4 shiftwidth=4')
+
+-- Lisp/Common Lispではスペースを使用し、自動インデントを有効化
+vim.cmd('autocmd FileType lisp setlocal autoindent smartindent expandtab tabstop=2 softtabstop=2 shiftwidth=2')

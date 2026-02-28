@@ -29,6 +29,10 @@ require('lazy').setup({
   require('plugins.completion'),
   require('plugins.hop'),
   require('plugins.mark'),
+  --require('plugins.treesitter'),
+  require('plugins.lisp.sexp'),
+  require('plugins.lisp.sexp-mfrp'),
+  require('plugins.lisp.slimv'),
 },
 { rocks = { enabled = false } })
 
